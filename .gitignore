@@ -1,0 +1,13 @@
+# Visual Studio 2022
+.vs/
+
+# Generated files
+*.user
+*.vcxproj.user
+*.vcxproj.filters
+
+# Others
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
