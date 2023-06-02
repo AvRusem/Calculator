@@ -5,6 +5,7 @@
 *.user
 *.vcproj.*
 *.vcxproj.*
+*.sln
 
 # Others
 [Dd]ebug/
