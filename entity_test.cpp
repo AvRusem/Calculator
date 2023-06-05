@@ -13,7 +13,7 @@ TEST(VariableTest, Test) {
 	EXPECT_TRUE(std::isnan(var.Extract()));
 }
 
-TEST(functiontest, test) {
+TEST(FunctionTest, Test) {
 	std::shared_ptr<Variable> var1(new Variable(10));
 	std::shared_ptr<Variable> var2(new Variable(20));
 

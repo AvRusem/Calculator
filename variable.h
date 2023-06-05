@@ -7,15 +7,13 @@
 #include "entity.h"
 
 class Variable final :
-    public IEntity {
+    public Entity {
 private:
-    double value_;
+    void MakeNonActual() noexcept;
 
 public:
     Variable();
     Variable(double value);
-
-    double Extract() const override;
 
     Variable& operator=(double value);
 

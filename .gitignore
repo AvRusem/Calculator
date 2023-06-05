@@ -3,8 +3,9 @@
 
 # Generated files
 *.user
-*.vcxproj.user
-*.vcxproj.filters
+*.vcproj.*
+*.vcxproj.*
+*.sln
 
 # Others
 [Dd]ebug/

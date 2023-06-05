@@ -15,7 +15,7 @@ std::string DoubleToString(double value) {
 	return oss.str();
 }
 
-std::shared_ptr<IEntity> Calculator::GetEntity(std::string identidier) noexcept {
+std::shared_ptr<Entity> Calculator::GetEntity(std::string identidier) noexcept {
 	if (IsVariableExist(identidier)) {
 		return variables_[identidier];
 	}
@@ -198,9 +198,14 @@ std::string Calculator::ExecuteError() const noexcept {
 	return kErrorMessage;
 }
 
-void Calculator::Start() {
+void Calculator::Start() noexcept {
 	while (true) {
 		auto result = handler_.GetInput();
 		std::cout << ExecuteCommand(result.first, result.second);
 	}
+}
+
+std::string Calculator::Execute(const std::string& response) noexcept {
+	auto result = handler_.Handle(response);
+	return ExecuteCommand(result.first, result.second);
 }

@@ -11,17 +11,20 @@
 #include <memory>
 
 class Function final :
-    public IEntity {
+    public Entity {
 private:
-    std::shared_ptr<IEntity> first_;
-    std::shared_ptr<IEntity> second_;
+    std::shared_ptr<Entity> first_;
+    std::shared_ptr<Entity> second_;
     std::unique_ptr<Operator> operator_;
+    bool is_actual_;
 
 public:
     Function() = default;
-    Function(const std::shared_ptr<IEntity>& first, std::unique_ptr<Operator>&& op = std::make_unique<AddFunctor>(), 
-        const std::shared_ptr<IEntity>& second = std::make_shared<Variable>(0));
+    Function(const std::shared_ptr<Entity>& first, std::unique_ptr<Operator>&& op = std::make_unique<AddFunctor>(), 
+        const std::shared_ptr<Entity>& second = std::make_shared<Variable>(0));
 
-    double Extract() const override;
+    double Extract() noexcept override;
+    bool IsActual() const noexcept;
+    void MakeNonActual() noexcept;
 
 };

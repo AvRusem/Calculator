@@ -33,7 +33,7 @@ private:
 	std::map<std::string, std::shared_ptr<Function>> functions_;
 
 	double GetValue(std::string identidier) const noexcept;
-	std::shared_ptr<IEntity> GetEntity(std::string identidier) noexcept;
+	std::shared_ptr<Entity> GetEntity(std::string identidier) noexcept;
 
 	bool IsVariableExist(const std::string& identifier) const noexcept;
 	bool IsFunctionExist(const std::string& identifier) const noexcept;
@@ -52,6 +52,7 @@ private:
 public:
 	Calculator() = default;
 
-	void Start();
+	void Calculator::Start() noexcept;
+	std::string Execute(const std::string& response) noexcept;
 
 };

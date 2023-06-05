@@ -1,15 +1,21 @@
 #include "pch.h"
 #include "variable.h"
+#include "function.h"
 
-Variable::Variable() : value_(NAN) {}
-Variable::Variable(double value) : value_(value) {}
+Variable::Variable() : Entity(NAN) {}
+Variable::Variable(double value) : Entity(value) {}
 
-double Variable::Extract() const {
-	return value_;
+void Variable::MakeNonActual() noexcept {
+	for (auto el : GetDependent()) {
+		if (static_cast<Function*>(el)->IsActual()) {
+			static_cast<Function*>(el)->MakeNonActual();
+		}
+	}
 }
 
 Variable& Variable::operator=(double value) {
-	value_ = value;
+	SetValue(value);
+	MakeNonActual();
 
 	return *this;
 }
