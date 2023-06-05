@@ -1,6 +1,6 @@
-#include "pch.h"
-#include "variable.h"
-#include "function.h"
+#include "pch.hpp"
+#include "variable.hpp"
+#include "function.hpp"
 
 TEST(VariableTest, Test) {
 	Variable var(10);

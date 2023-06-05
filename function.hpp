@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "entity.h"
-#include "operator.h"
-#include "variable.h"
+#include "entity.hpp"
+#include "operator.hpp"
+#include "variable.hpp"
 
 #include <memory>
 

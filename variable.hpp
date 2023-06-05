@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "entity.h"
+#include "entity.hpp"
 
 class Variable final :
     public Entity {

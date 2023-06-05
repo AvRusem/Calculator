@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "function.h"
+#include "pch.hpp"
+#include "function.hpp"
 
 Function::Function(const std::shared_ptr<Entity>& first, std::unique_ptr<Operator>&& op,
 	const std::shared_ptr<Entity>& second) : Entity((*op)(first->Extract(), second->Extract())),

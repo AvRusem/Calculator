@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "entity.h"
+#include "pch.hpp"
+#include "entity.hpp"
 
 Entity::Entity(double value) : value_(value) {}
 

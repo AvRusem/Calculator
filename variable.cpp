@@ -1,6 +1,6 @@
-#include "pch.h"
-#include "variable.h"
-#include "function.h"
+#include "pch.hpp"
+#include "variable.hpp"
+#include "function.hpp"
 
 Variable::Variable() : Entity(NAN) {}
 Variable::Variable(double value) : Entity(value) {}

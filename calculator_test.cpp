@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "calculator.h"
+#include "pch.hpp"
+#include "calculator.hpp"
 
 TEST(CalculatorTest, Variablse) {
 	Calculator calculator;

@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "operator.h"
+#include "pch.hpp"
+#include "operator.hpp"
 
 double AddFunctor::operator()(double a, double b) const {
 	if (std::isnan(a) || std::isnan(b))

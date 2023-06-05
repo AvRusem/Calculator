@@ -8,10 +8,10 @@
 #include <string>
 #include <memory>
 
-#include "operator.h"
-#include "variable.h"
-#include "function.h"
-#include "handler.h"
+#include "operator.hpp"
+#include "variable.hpp"
+#include "function.hpp"
+#include "handler.hpp"
 
 namespace calculator {
 	enum Commands {
