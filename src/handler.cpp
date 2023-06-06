@@ -1,8 +1,7 @@
-#include "pch.hpp"
+#include <iostream>
+
 #include "handler.hpp"
 #include "calculator.hpp"
-
-#include <iostream>
 
 // The identifier is a non-empty string that can contain letters of the English
 // alphabet, numbers, and the underscore character. An identifier cannot start

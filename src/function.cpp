@@ -1,4 +1,3 @@
-#include "pch.hpp"
 #include "function.hpp"
 
 Function::Function(const std::shared_ptr<Entity>& first, std::unique_ptr<Operator>&& op,

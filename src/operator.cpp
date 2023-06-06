@@ -1,4 +1,5 @@
-#include "pch.hpp"
+#include <cmath>
+
 #include "operator.hpp"
 
 double AddFunctor::operator()(double a, double b) const {

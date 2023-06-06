@@ -1,4 +1,4 @@
-#include "pch.hpp"
+#include <gtest/gtest.h>
 #include "handler.hpp"
 #include "calculator.hpp"
 

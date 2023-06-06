@@ -4,11 +4,11 @@
 
 #pragma once
 
+#include <memory>
+
 #include "entity.hpp"
 #include "operator.hpp"
 #include "variable.hpp"
-
-#include <memory>
 
 class Function final :
     public Entity {
