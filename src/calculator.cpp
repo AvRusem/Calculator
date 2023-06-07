@@ -200,7 +200,7 @@ std::string Calculator::ExecuteError() const noexcept {
 }
 
 void Calculator::Start() noexcept {
-	while (true) {
+	while (!feof(stdin)) {
 		auto result = handler_.GetInput();
 		std::cout << ExecuteCommand(result.first, result.second);
 	}
