@@ -4,7 +4,7 @@
 Variable::Variable() : Entity(NAN) {}
 Variable::Variable(double value) : Entity(value) {}
 
-void Variable::MakeNonActual() noexcept {
+void Variable::MakeNonActual() {
 	for (auto el : GetDependent()) {
 		if (static_cast<Function*>(el)->IsActual()) {
 			static_cast<Function*>(el)->MakeNonActual();

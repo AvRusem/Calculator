@@ -16,16 +16,30 @@ std::string DoubleToString(double value) {
 	return oss.str();
 }
 
-std::shared_ptr<Entity> Calculator::GetEntity(std::string identidier) noexcept {
-	if (IsVariableExist(identidier)) {
-		return variables_[identidier];
+bool IsStringDouble(const std::string& str) {
+	try {
+		size_t pos = 0;
+		static_cast<void>(std::stod(str, &pos)); // unused return value
+		return (pos == str.length());
 	}
-	else {
-		return functions_[identidier];
+	catch (const std::invalid_argument&) {
+		return false;
+	}
+	catch (const std::out_of_range&) {
+		return false;
 	}
 }
 
-double Calculator::GetValue(std::string identidier) const noexcept {
+std::shared_ptr<Entity> Calculator::GetEntity(std::string identidier) const {
+	if (IsVariableExist(identidier)) {
+		return variables_.at(identidier);
+	}
+	else {
+		return functions_.at(identidier);
+	}
+}
+
+double Calculator::GetValue(std::string identidier) const {
 	if (IsVariableExist(identidier)) {
 		return variables_.at(identidier)->Extract();
 	}
@@ -46,21 +60,7 @@ bool Calculator::IsExist(const std::string& identifier) const noexcept {
 	return IsVariableExist(identifier) || IsFunctionExist(identifier);
 }
 
-bool Calculator::IsStringDouble(const std::string& str) const {
-	try {
-		size_t pos = 0;
-		std::stod(str, &pos);
-		return (pos == str.length());
-	}
-	catch (const std::invalid_argument&) {
-		return false;
-	}
-	catch (const std::out_of_range&) {
-		return false;
-	}
-}
-
-std::string Calculator::ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match) noexcept {
+std::string Calculator::ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match) {
 	switch (command) {
 	case calculator::kVar:
 		return ExecuteVar(match);
@@ -86,7 +86,7 @@ std::string Calculator::ExecuteCommand(const calculator::Commands command, const
 	}
 }
 
-std::string Calculator::ExecuteVar(const std::vector<std::string>& match) noexcept {
+std::string Calculator::ExecuteVar(const std::vector<std::string>& match) {
 	std::string identifier = match[1];
 	const std::string kErrorMessage("Error: This identifier is already in use\n");
 
@@ -98,7 +98,7 @@ std::string Calculator::ExecuteVar(const std::vector<std::string>& match) noexce
 	return "";
 }
 
-std::string Calculator::ExecuteLet(const std::vector<std::string>& match) noexcept {
+std::string Calculator::ExecuteLet(const std::vector<std::string>& match) {
 	std::string identifier1 = match[1];
 	const std::string kErrorMessage("Error: This identifier is already used by the function\n");
 
@@ -126,7 +126,7 @@ std::string Calculator::ExecuteLet(const std::vector<std::string>& match) noexce
 	return "";
 }
 
-std::string Calculator::ExecuteFn(const std::vector<std::string>& match) noexcept {
+std::string Calculator::ExecuteFn(const std::vector<std::string>& match) {
 	std::string identifier1 = match[1];
 	const std::string kErrorMessage("Error: This identifier is already in use\n");
 
@@ -165,7 +165,7 @@ std::string Calculator::ExecuteFn(const std::vector<std::string>& match) noexcep
 	return "";
 }
 
-std::string Calculator::ExecutePrint(const std::vector<std::string>& match) noexcept {
+std::string Calculator::ExecutePrint(const std::vector<std::string>& match) {
 	std::string identifier = match[1];
 	const std::string kErrorMessage("Error: Variable or Function named \"" + identifier + "\" does not exist\n");
 	if (!IsExist(identifier)) {
@@ -176,7 +176,7 @@ std::string Calculator::ExecutePrint(const std::vector<std::string>& match) noex
 	return kResponse;
 }
 
-std::string Calculator::ExecutePrintvars() const noexcept {
+std::string Calculator::ExecutePrintvars() const {
 	std::string response = "";
 	for (const auto& el : variables_) {
 		response += el.first + ':' + DoubleToString(RoundToTwoDecimalPlaces(el.second->Extract())) + '\n';
@@ -185,7 +185,7 @@ std::string Calculator::ExecutePrintvars() const noexcept {
 	return response;
 }
 
-std::string Calculator::ExecutePrintfns() const noexcept {
+std::string Calculator::ExecutePrintfns() const {
 	std::string response = "";
 	for (const auto& el : functions_) {
 		response += el.first + ':' + DoubleToString(RoundToTwoDecimalPlaces(el.second->Extract())) + '\n';
@@ -194,19 +194,19 @@ std::string Calculator::ExecutePrintfns() const noexcept {
 	return response;
 }
 
-std::string Calculator::ExecuteError() const noexcept {
+std::string Calculator::ExecuteError() const {
 	const std::string kErrorMessage("Error: Wrong request\n");
 	return kErrorMessage;
 }
 
-void Calculator::Start() noexcept {
+void Calculator::Start() {
 	while (!feof(stdin)) {
 		auto result = handler_.GetInput();
 		std::cout << ExecuteCommand(result.first, result.second);
 	}
 }
 
-std::string Calculator::Execute(const std::string& response) noexcept {
+std::string Calculator::Execute(const std::string& response) {
 	auto result = handler_.Handle(response);
 	return ExecuteCommand(result.first, result.second);
 }

@@ -9,7 +9,7 @@
 class Variable final :
     public Entity {
 private:
-    void MakeNonActual() noexcept;
+    void MakeNonActual();
 
 public:
     Variable();

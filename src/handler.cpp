@@ -25,7 +25,7 @@ Handler::Handler() :
 	// printfns
 	printfns_regex_(R"(^printfns$)") {}
 
-std::pair<calculator::Commands, std::vector<std::string>> Handler::Handle(const std::string& request) const noexcept {
+std::pair<calculator::Commands, std::vector<std::string>> Handler::Handle(const std::string& request) const {
 	std::smatch match;
 	std::pair<calculator::Commands, std::vector<std::string>> result(calculator::kError, std::vector<std::string>(match.begin(), match.end()));
 
@@ -52,7 +52,7 @@ std::pair<calculator::Commands, std::vector<std::string>> Handler::Handle(const 
 	return result;
 }
 
-std::pair<calculator::Commands, std::vector<std::string>> Handler::GetInput() const noexcept {
+std::pair<calculator::Commands, std::vector<std::string>> Handler::GetInput() const {
 	std::string request;
 	std::getline(std::cin, request);
 

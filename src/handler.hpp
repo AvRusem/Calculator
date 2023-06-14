@@ -24,7 +24,7 @@ private:
 public:
 	Handler();
 
-	std::pair<calculator::Commands, std::vector<std::string>> Handle(const std::string& request) const noexcept;
-	std::pair<calculator::Commands, std::vector<std::string>> GetInput() const noexcept;
+	std::pair<calculator::Commands, std::vector<std::string>> Handle(const std::string& request) const;
+	std::pair<calculator::Commands, std::vector<std::string>> GetInput() const;
 
 };
