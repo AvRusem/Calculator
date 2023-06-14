@@ -19,8 +19,8 @@ protected:
 public:
 	Entity(double value);
 
-	virtual double Extract() noexcept;
-	void AddDependent(Entity* entity) noexcept;
+	virtual double Extract();
+	void AddDependent(Entity* entity);
 
 	virtual ~Entity() = default;
 

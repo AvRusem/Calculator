@@ -23,8 +23,8 @@ public:
     Function(const std::shared_ptr<Entity>& first, std::unique_ptr<Operator>&& op = std::make_unique<AddFunctor>(), 
         const std::shared_ptr<Entity>& second = std::make_shared<Variable>(0));
 
-    double Extract() noexcept override;
+    double Extract() override;
     bool IsActual() const noexcept;
-    void MakeNonActual() noexcept;
+    void MakeNonActual();
 
 };

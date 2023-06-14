@@ -7,7 +7,7 @@ Function::Function(const std::shared_ptr<Entity>& first, std::unique_ptr<Operato
 	second->AddDependent(this);
 }
 
-double Function::Extract() noexcept {
+double Function::Extract() {
 	if (!is_actual_) {
 		SetValue((*operator_)(first_->Extract(), second_->Extract()));
 		is_actual_ = true;
@@ -20,7 +20,7 @@ bool Function::IsActual() const noexcept {
 	return is_actual_;
 }
 
-void Function::MakeNonActual() noexcept {
+void Function::MakeNonActual() {
 	is_actual_ = false;
 
 	for (auto el : GetDependent()) {

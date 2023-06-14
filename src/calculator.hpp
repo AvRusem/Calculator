@@ -32,27 +32,26 @@ private:
 	std::map<std::string, std::shared_ptr<Variable>> variables_;
 	std::map<std::string, std::shared_ptr<Function>> functions_;
 
-	double GetValue(std::string identidier) const noexcept;
-	std::shared_ptr<Entity> GetEntity(std::string identidier) noexcept;
+	double GetValue(std::string identidier) const;
+	std::shared_ptr<Entity> GetEntity(std::string identidier) const;
 
 	bool IsVariableExist(const std::string& identifier) const noexcept;
 	bool IsFunctionExist(const std::string& identifier) const noexcept;
 	bool IsExist(const std::string& identifier) const noexcept;
-	bool IsStringDouble(const std::string& str) const;
 
-	std::string ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match)  noexcept;
-	std::string ExecuteVar(const std::vector<std::string>& match)  noexcept;
-	std::string ExecuteLet(const std::vector<std::string>& match)  noexcept;
-	std::string ExecuteFn(const std::vector<std::string>& match)  noexcept;
-	std::string ExecutePrint(const std::vector<std::string>& match) noexcept;
-	std::string ExecutePrintvars() const noexcept;
-	std::string ExecutePrintfns() const noexcept;
-	std::string ExecuteError() const noexcept;
+	std::string ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match);
+	std::string ExecuteVar(const std::vector<std::string>& match);
+	std::string ExecuteLet(const std::vector<std::string>& match);
+	std::string ExecuteFn(const std::vector<std::string>& match);
+	std::string ExecutePrint(const std::vector<std::string>& match);
+	std::string ExecutePrintvars() const;
+	std::string ExecutePrintfns() const;
+	std::string ExecuteError() const;
 
 public:
 	Calculator() = default;
 
-	void Calculator::Start() noexcept;
-	std::string Execute(const std::string& response) noexcept;
+	void Calculator::Start();
+	std::string Execute(const std::string& response);
 
 };
