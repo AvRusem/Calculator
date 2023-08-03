@@ -13,6 +13,8 @@ class Operator {
 public:
 	virtual double operator()(double, double) const = 0;
 
+	virtual ~Operator() = default;
+
 };
 
 class AddFunctor final : public Operator {
