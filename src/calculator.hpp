@@ -14,7 +14,7 @@
 #include "handler.hpp"
 
 namespace calculator {
-	enum Commands {
+	enum class Commands {
 		kVar,
 		kLet,
 		kFn,

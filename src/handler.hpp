@@ -8,9 +8,9 @@
 #include <vector>
 
 namespace calculator {
-	enum Commands;
-} // namespace calculator
+enum class Commands;
 
+} // namespace calculator
 
 class Handler {
 private:

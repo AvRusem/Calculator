@@ -10,7 +10,7 @@ TEST(HandlerTest, Var) {
 	Handler handler;
 	auto result = handler.Handle(input);
 
-	EXPECT_EQ(calculator::kVar, result.first);
+	EXPECT_EQ(calculator::Commands::kVar, result.first);
 	EXPECT_EQ("x", result.second[1]);
 }
 
@@ -20,7 +20,7 @@ TEST(HandlerTest, Let) {
 	Handler handler;
 	auto result = handler.Handle(input);
 
-	EXPECT_EQ(calculator::kLet, result.first);
+	EXPECT_EQ(calculator::Commands::kLet, result.first);
 	EXPECT_EQ("x", result.second[1]);
 	EXPECT_EQ(10, std::stod(result.second[2]));
 
@@ -28,7 +28,7 @@ TEST(HandlerTest, Let) {
 
 	result.swap(handler.Handle(input));
 
-	EXPECT_EQ(calculator::kLet, result.first);
+	EXPECT_EQ(calculator::Commands::kLet, result.first);
 	EXPECT_EQ("z", result.second[1]);
 	EXPECT_EQ(10.12, std::stod(result.second[2]));
 
@@ -36,7 +36,7 @@ TEST(HandlerTest, Let) {
 
 	result.swap(handler.Handle(input));
 
-	EXPECT_EQ(calculator::kLet, result.first);
+	EXPECT_EQ(calculator::Commands::kLet, result.first);
 	EXPECT_EQ("z", result.second[1]);
 	EXPECT_EQ("abc_1", result.second[2]);
 }
@@ -47,7 +47,7 @@ TEST(HandlerTest, Fn) {
 	Handler handler;
 	auto result = handler.Handle(input);
 
-	EXPECT_EQ(calculator::kFn, result.first);
+	EXPECT_EQ(calculator::Commands::kFn, result.first);
 	EXPECT_EQ("y", result.second[1]);
 	EXPECT_EQ("x", result.second[2]);
 
@@ -55,7 +55,7 @@ TEST(HandlerTest, Fn) {
 
 	result.swap(handler.Handle(input));
 
-	EXPECT_EQ(calculator::kFn, result.first);
+	EXPECT_EQ(calculator::Commands::kFn, result.first);
 	EXPECT_EQ("x1_", result.second[1]);
 	EXPECT_EQ("y", result.second[2]);
 	EXPECT_EQ("+", result.second[3]);
@@ -68,37 +68,37 @@ TEST(HandlerTest, Print) {
 	Handler handler;
 	auto result = handler.Handle(input);
 
-	EXPECT_EQ(calculator::kPrint, result.first);
+	EXPECT_EQ(calculator::Commands::kPrint, result.first);
 	EXPECT_EQ("variable", result.second[1]);
 
 	input = "printvars";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kPrintvars, result.first);
+	EXPECT_EQ(calculator::Commands::kPrintvars, result.first);
 
 	input = "printfns";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kPrintfns, result.first);
+	EXPECT_EQ(calculator::Commands::kPrintfns, result.first);
 }
 
 TEST(HandlerTest, Error) {
 	std::string input = "var x=10";
 	Handler handler;
 	auto result = handler.Handle(input);
-	EXPECT_EQ(calculator::kError, result.first);
+	EXPECT_EQ(calculator::Commands::kError, result.first);
 
 	input = "var 1x";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kError, result.first);
+	EXPECT_EQ(calculator::Commands::kError, result.first);
 
 	input = "let 10=12";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kError, result.first);
+	EXPECT_EQ(calculator::Commands::kError, result.first);
 
 	input = "fn x=y^z";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kError, result.first);
+	EXPECT_EQ(calculator::Commands::kError, result.first);
 
 	input = "fn x=y+36";
 	result.swap(handler.Handle(input));
-	EXPECT_EQ(calculator::kError, result.first);
+	EXPECT_EQ(calculator::Commands::kError, result.first);
 }

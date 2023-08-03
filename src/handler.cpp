@@ -27,25 +27,25 @@ Handler::Handler() :
 
 std::pair<calculator::Commands, std::vector<std::string>> Handler::Handle(const std::string& request) const {
 	std::smatch match;
-	std::pair<calculator::Commands, std::vector<std::string>> result(calculator::kError, std::vector<std::string>(match.begin(), match.end()));
+	std::pair<calculator::Commands, std::vector<std::string>> result(calculator::Commands::kError, std::vector<std::string>(match.begin(), match.end()));
 
 	if (std::regex_match(request, match, var_regex_)) {
-		result.first = calculator::kVar;
+		result.first = calculator::Commands::kVar;
 	}
 	else if (std::regex_match(request, match, let_regex_)) {
-		result.first = calculator::kLet;
+		result.first = calculator::Commands::kLet;
 	}
 	else if (std::regex_match(request, match, fn_regex_)) {
-		result.first = calculator::kFn;
+		result.first = calculator::Commands::kFn;
 	}
 	else if (std::regex_match(request, match, print_regex_)) {
-		result.first = calculator::kPrint;
+		result.first = calculator::Commands::kPrint;
 	}
 	else if (std::regex_match(request, match, printvars_regex_)) {
-		result.first = calculator::kPrintvars;
+		result.first = calculator::Commands::kPrintvars;
 	}
 	else if (std::regex_match(request, match, printfns_regex_)) {
-		result.first = calculator::kPrintfns;
+		result.first = calculator::Commands::kPrintfns;
 	}
 
 	result.second = std::vector<std::string>(match.begin(), match.end());

@@ -66,25 +66,25 @@ bool Calculator::IsExist(const std::string& identifier) const noexcept {
 
 std::string Calculator::ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match) {
 	switch (command) {
-	case calculator::kVar:
+	case calculator::Commands::kVar:
 		return ExecuteVar(match);
 
-	case calculator::kLet:
+	case calculator::Commands::kLet:
 		return ExecuteLet(match);
 
-	case calculator::kFn:
+	case calculator::Commands::kFn:
 		return ExecuteFn(match);
 
-	case calculator::kPrint:
+	case calculator::Commands::kPrint:
 		return ExecutePrint(match);
 
-	case calculator::kPrintvars:
+	case calculator::Commands::kPrintvars:
 		return ExecutePrintvars();
 
-	case calculator::kPrintfns:
+	case calculator::Commands::kPrintfns:
 		return ExecutePrintfns();
 
-	case calculator::kError:
+	case calculator::Commands::kError:
 	default:
 		return ExecuteError();
 	}
