@@ -8,12 +8,11 @@
 
 class Variable final :
     public Entity {
-private:
-    void MakeNonActual();
-
 public:
     Variable();
     Variable(double value);
+
+    void MakeNonActual() override;
 
     Variable& operator=(double value);
 

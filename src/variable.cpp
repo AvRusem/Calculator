@@ -6,8 +6,8 @@ Variable::Variable(double value) : Entity(value) {}
 
 void Variable::MakeNonActual() {
 	for (auto el : GetDependent()) {
-		if (static_cast<Function*>(el)->IsActual()) {
-			static_cast<Function*>(el)->MakeNonActual();
+		if (el->IsActual()) {
+			el->MakeNonActual();
 		}
 	}
 }

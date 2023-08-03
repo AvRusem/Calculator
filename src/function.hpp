@@ -16,7 +16,6 @@ private:
     std::shared_ptr<Entity> first_;
     std::shared_ptr<Entity> second_;
     std::unique_ptr<Operator> operator_;
-    bool is_actual_;
 
 public:
     Function() = default;
@@ -24,7 +23,5 @@ public:
         const std::shared_ptr<Entity>& second = std::make_shared<Variable>(0));
 
     double Extract() override;
-    bool IsActual() const noexcept;
-    void MakeNonActual();
 
 };
