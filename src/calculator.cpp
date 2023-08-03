@@ -2,9 +2,11 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <tuple>
 
 #include "calculator.hpp"
 
+namespace {
 double RoundToTwoDecimalPlaces(double value) {
 	double rounded = std::round(value * 100.0) / 100.0;
 	return rounded;
@@ -19,7 +21,7 @@ std::string DoubleToString(double value) {
 bool IsStringDouble(const std::string& str) {
 	try {
 		size_t pos = 0;
-		static_cast<void>(std::stod(str, &pos)); // unused return value
+		std::ignore = std::stod(str, &pos);
 		return (pos == str.length());
 	}
 	catch (const std::invalid_argument&) {
@@ -29,6 +31,8 @@ bool IsStringDouble(const std::string& str) {
 		return false;
 	}
 }
+
+} // namespace
 
 std::shared_ptr<Entity> Calculator::GetEntity(std::string identidier) const {
 	if (IsVariableExist(identidier)) {
