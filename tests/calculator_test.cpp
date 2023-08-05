@@ -1,95 +1,156 @@
 #include <gtest/gtest.h>
 #include "calculator.hpp"
 
+using namespace calculator;
+
 TEST(CalculatorTest, Variablse) {
 	Calculator calculator;
 
-	std::string response = "var x";
-	EXPECT_EQ("", calculator.Execute(response));
+	auto result = calculator.DeclareVariable("x");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print x";
-	EXPECT_EQ("nan\n", calculator.Execute(response));
+	result = calculator.GetValueById("x");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_TRUE(std::isnan(std::get<double>(result->return_value)));
+	result.reset();
 
-	response = "let x=42";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("x", "42");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
 
-	response = "print x";
-	EXPECT_EQ("42.00\n", calculator.Execute(response));
+	result = calculator.GetValueById("x");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(42.0, std::get<double>(result->return_value));
+	result.reset();
 
-	response = "let x=1.234";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("x", "1.234");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print x";
-	EXPECT_EQ("1.23\n", calculator.Execute(response));
+	result = calculator.GetValueById("x");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(1.23, std::get<double>(result->return_value));
+	result.reset();
 
-	response = "let y=x";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("y", "x");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "let x=99";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("x", "99");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "printvars";
-	EXPECT_EQ("x:99.00\ny:1.23\n", calculator.Execute(response));
+	result = calculator.GetVariablesValues();
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ("x", std::get<ReturnPairType>(result->return_value)[0].first);
+	EXPECT_EQ(99, std::get<ReturnPairType>(result->return_value)[0].second);
+	EXPECT_EQ("y", std::get<ReturnPairType>(result->return_value)[1].first);
+	EXPECT_EQ(1.23, std::get<ReturnPairType>(result->return_value)[1].second);
+	result.reset();
 }
 
 TEST(CalculatorTest, Functions) {
 	Calculator calculator;
 
-	std::string response = "var x";
-	EXPECT_EQ("", calculator.Execute(response));
+	auto result = calculator.DeclareVariable("x");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "var y";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.DeclareVariable("y");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "fn XPlusY=x+y";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.DeclareFunction("XPlusY", "x", GetOperatorFromString("+"), "y");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print XPlusY";
-	EXPECT_EQ("nan\n", calculator.Execute(response));
+	result = calculator.GetValueById("XPlusY");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_TRUE(std::isnan(std::get<double>(result->return_value)));
+	result.reset();
 
-	response = "let x=3";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("x", "3");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "let y=4";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("y", "4");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print XPlusY";
-	EXPECT_EQ("7.00\n", calculator.Execute(response));
+	result = calculator.GetValueById("XPlusY");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(7.0, std::get<double>(result->return_value));
+	result.reset();
 
-	response = "let x=10";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("x", "10");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print XPlusY";
-	EXPECT_EQ("14.00\n", calculator.Execute(response));
+	result = calculator.GetValueById("XPlusY");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(14.0, std::get<double>(result->return_value));
+	result.reset();
 
-	response = "let z=3.5";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("z", "3.5");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "fn XPlusYDivZ=XPlusY/z";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.DeclareFunction("XPlusYDivZ", "XPlusY", GetOperatorFromString("/"), "z");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "printfns";
-	EXPECT_EQ("XPlusY:14.00\nXPlusYDivZ:4.00\n", calculator.Execute(response));
+	result = calculator.GetFunctionsValues();
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ("XPlusY", std::get<ReturnPairType>(result->return_value)[0].first);
+	EXPECT_EQ(14.0, std::get<ReturnPairType>(result->return_value)[0].second);
+	EXPECT_EQ("XPlusYDivZ", std::get<ReturnPairType>(result->return_value)[1].first);
+	EXPECT_EQ(4.0, std::get<ReturnPairType>(result->return_value)[1].second);
+	result.reset();
 }
 
 TEST(CalculatorTest, FnAndLetDiff) {
 	Calculator calculator;
 
-	std::string response = "let v=42";
-	EXPECT_EQ("", calculator.Execute(response));
+	auto result = calculator.SetVariable("v", "42");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "let variable=v";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("variable", "v");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "fn function=v";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.DeclareFunction("function", "v");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "let v=43";
-	EXPECT_EQ("", calculator.Execute(response));
+	result = calculator.SetVariable("v", "43");
+	EXPECT_EQ(Status::kOk, result->status);
+	ASSERT_TRUE(std::holds_alternative<std::monostate>(result->return_value));
+	result.reset();
 
-	response = "print variable";
-	EXPECT_EQ("42.00\n", calculator.Execute(response));
+	result = calculator.GetValueById("variable");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(42.0, std::get<double>(result->return_value));
+	result.reset();
 
-	response = "print function";
-	EXPECT_EQ("43.00\n", calculator.Execute(response));
+	result = calculator.GetValueById("function");
+	EXPECT_EQ(Status::kOk, result->status);
+	EXPECT_EQ(43.0, std::get<double>(result->return_value));
+	result.reset();
 }

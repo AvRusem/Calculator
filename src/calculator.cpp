@@ -12,16 +12,10 @@ double RoundToTwoDecimalPlaces(double value) {
 	return rounded;
 }
 
-std::string DoubleToString(double value) {
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(2) << value;
-	return oss.str();
-}
-
 bool IsStringDouble(const std::string& str) {
 	try {
 		size_t pos = 0;
-		std::ignore = std::stod(str, &pos);
+		std::ignore = std::stod(std::string(str), &pos);
 		return (pos == str.length());
 	}
 	catch (const std::invalid_argument&) {
@@ -34,183 +28,120 @@ bool IsStringDouble(const std::string& str) {
 
 } // namespace
 
-std::shared_ptr<Entity> Calculator::GetEntity(std::string identidier) const {
-	if (IsVariableExist(identidier)) {
-		return variables_.at(identidier);
+using namespace calculator;
+
+std::shared_ptr<Entity> Calculator::GetEntity(const std::string& identifier) const {
+	if (IsVariableExist(identifier)) {
+		return variables_.at(std::string(identifier));
 	}
 	else {
-		return functions_.at(identidier);
+		return functions_.at(std::string(identifier));
 	}
 }
 
-double Calculator::GetValue(std::string identidier) const {
-	if (IsVariableExist(identidier)) {
-		return variables_.at(identidier)->Extract();
+double Calculator::GetValue(const std::string& identifier) const {
+	if (IsVariableExist(identifier)) {
+		return variables_.at(std::string(identifier))->Extract();
 	}
 	else {
-		return functions_.at(identidier)->Extract();
+		return functions_.at(std::string(identifier))->Extract();
 	}
 }
 
 bool Calculator::IsVariableExist(const std::string& identifier) const noexcept {
-	return variables_.count(identifier) > 0;
+	return variables_.count(std::string(identifier)) > 0;
 }
 
 bool Calculator::IsFunctionExist(const std::string& identifier) const noexcept {
-	return functions_.count(identifier) > 0;
+	return functions_.count(std::string(identifier)) > 0;
 }
 
 bool Calculator::IsExist(const std::string& identifier) const noexcept {
 	return IsVariableExist(identifier) || IsFunctionExist(identifier);
 }
 
-std::string Calculator::ExecuteCommand(const calculator::Commands command, const std::vector<std::string>& match) {
-	switch (command) {
-	case calculator::Commands::kVar:
-		return ExecuteVar(match);
-
-	case calculator::Commands::kLet:
-		return ExecuteLet(match);
-
-	case calculator::Commands::kFn:
-		return ExecuteFn(match);
-
-	case calculator::Commands::kPrint:
-		return ExecutePrint(match);
-
-	case calculator::Commands::kPrintvars:
-		return ExecutePrintvars();
-
-	case calculator::Commands::kPrintfns:
-		return ExecutePrintfns();
-
-	case calculator::Commands::kError:
-	default:
-		return ExecuteError();
-	}
-}
-
-std::string Calculator::ExecuteVar(const std::vector<std::string>& match) {
-	std::string identifier = match[1];
-	const std::string kErrorMessage("Error: This identifier is already in use\n");
-
+std::unique_ptr<Result> Calculator::DeclareVariable(const std::string& identifier) { // match[1]
 	if (IsExist(identifier)) {
-		return kErrorMessage;
+		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}
 
-	variables_[identifier] = std::make_shared<Variable>(NAN);
-	return "";
+	variables_[std::string(identifier)] = std::make_shared<Variable>(NAN);
+	return std::make_unique<Result>();
 }
 
-std::string Calculator::ExecuteLet(const std::vector<std::string>& match) {
-	std::string identifier1 = match[1];
-	const std::string kErrorMessage("Error: This identifier is already used by the function\n");
-
+std::unique_ptr<Result> Calculator::SetVariable(const std::string& identifier1, const std::string& identifier2) { // match[1 and 2]
 	if (IsFunctionExist(identifier1)) {
-		return kErrorMessage;
+		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}
 
-	std::string identidier2 = match[2];
 	double value;
-	if (!IsStringDouble(identidier2)) {
-		const std::string kErrorId2Message("Error: Variable or Function named \"" + identidier2 + "\" does not exist\n");
-		if (!IsExist(identidier2)) {
-			return kErrorId2Message;
+	if (!IsStringDouble(identifier2)) {
+		if (!IsExist(identifier2)) {
+			return std::make_unique<Result>(Errors::kIdentifierTaken);
 		}
-		value = GetValue(identidier2);
+		value = GetValue(identifier2);
 	}
 	else {
-		value = std::stod(identidier2);
+		value = std::stod(std::string(identifier2.begin(), identifier2.end()));
 	}
 
 	if (!IsVariableExist(identifier1)) {
-		variables_[identifier1] = std::make_shared<Variable>(NAN);
+		variables_[std::string(identifier1)] = std::make_shared<Variable>(NAN);
 	}
-	*(variables_[identifier1]) = value;
-	return "";
+	*(variables_[std::string(identifier1)]) = value;
+	return std::make_unique<Result>();
 }
 
-std::string Calculator::ExecuteFn(const std::vector<std::string>& match) {
-	std::string identifier1 = match[1];
-	const std::string kErrorMessage("Error: This identifier is already in use\n");
-
-	if (IsExist(identifier1)) {
-		return kErrorMessage;
+std::unique_ptr<calculator::Result> Calculator::DeclareFunction(const std::string& identifier, const std::string& identifier1,
+	std::unique_ptr<Operator> bin_operator, const std::string& identifier2) { // 1 2 3 4
+	if (IsExist(identifier)) {
+		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}
 
-	std::string identifier2 = match[2];
-	const std::string kErrorId2Message("Error: Variable or Function named \"" + identifier2 + "\" does not exist\n");
-
-	if (!IsExist(identifier2)) {
-		return kErrorId2Message;
+	if (!IsExist(identifier1)) {
+		return std::make_unique<Result>(Errors::kIdentifierNotExist);
 	}
 
-	if (match[3].empty()) {
-		functions_[identifier1] = std::make_shared<Function>(GetEntity(identifier2));
+	if (identifier2.empty()) {
+		functions_[std::string(identifier)] = std::make_shared<Function>(GetEntity(identifier1));
 	}
 	else {
-		std::string op_str = match[3];
-		std::string identifier3 = match[4];
-
-		const std::string kErrorOperatorMessage("Error: Wrong operator: " + op_str + '\n');
-		std::unique_ptr<Operator> op(GetOperatorFromString(op_str));
-		if (!op) {
-			return kErrorOperatorMessage;
+		if (!bin_operator) {
+			return std::make_unique<Result>(Errors::kWrongOperator);
 		}
 
-		const std::string kErrorId3Message("Error: Variable or Function named \"" + identifier3 + "\" does not exist\n");
-		if (!IsExist(identifier3)) {
-			return kErrorId3Message;
+		if (!IsExist(identifier2)) {
+			return std::make_unique<Result>(Errors::kIdentifierNotExist);
 		}
 
-		functions_[identifier1] = std::make_shared<Function>(GetEntity(identifier2), std::move(op), GetEntity(identifier3));
+		functions_[std::string(identifier)] = std::make_shared<Function>(GetEntity(identifier1), std::move(bin_operator), GetEntity(identifier2));
 	}
 
-	return "";
+	return std::make_unique<Result>();
 }
 
-std::string Calculator::ExecutePrint(const std::vector<std::string>& match) {
-	std::string identifier = match[1];
-	const std::string kErrorMessage("Error: Variable or Function named \"" + identifier + "\" does not exist\n");
+std::unique_ptr<Result> Calculator::GetValueById(const std::string& identifier) {
 	if (!IsExist(identifier)) {
-		return kErrorMessage;
+		return std::make_unique<Result>(Errors::kIdentifierNotExist);
 	}
 
-	const std::string kResponse(DoubleToString(RoundToTwoDecimalPlaces(GetEntity(identifier)->Extract())) + '\n');
-	return kResponse;
+	return std::make_unique<Result>(RoundToTwoDecimalPlaces(GetEntity(identifier)->Extract()));
 }
 
-std::string Calculator::ExecutePrintvars() const {
-	std::string response = "";
+std::unique_ptr<Result> Calculator::GetVariablesValues() const {
+	std::unique_ptr<Result> result = std::make_unique<Result>(variables_.size());
 	for (const auto& el : variables_) {
-		response += el.first + ':' + DoubleToString(RoundToTwoDecimalPlaces(el.second->Extract())) + '\n';
+		std::get<ReturnPairType>(result->return_value).push_back({ el.first, RoundToTwoDecimalPlaces(el.second->Extract()) });
 	}
 
-	return response;
+	return result;
 }
 
-std::string Calculator::ExecutePrintfns() const {
-	std::string response = "";
+std::unique_ptr<Result> Calculator::GetFunctionsValues() const {
+	std::unique_ptr<Result> result = std::make_unique<Result>(functions_.size());
 	for (const auto& el : functions_) {
-		response += el.first + ':' + DoubleToString(RoundToTwoDecimalPlaces(el.second->Extract())) + '\n';
+		std::get<ReturnPairType>(result->return_value).push_back({ el.first, RoundToTwoDecimalPlaces(el.second->Extract()) });
 	}
 
-	return response;
-}
-
-std::string Calculator::ExecuteError() const {
-	const std::string kErrorMessage("Error: Wrong request\n");
-	return kErrorMessage;
-}
-
-void Calculator::Start() {
-	while (!feof(stdin)) {
-		auto result = handler_.GetInput();
-		std::cout << ExecuteCommand(result.first, result.second);
-	}
-}
-
-std::string Calculator::Execute(const std::string& response) {
-	auto result = handler_.Handle(response);
-	return ExecuteCommand(result.first, result.second);
+	return result;
 }

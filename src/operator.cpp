@@ -44,5 +44,5 @@ std::unique_ptr<Operator> GetOperatorFromString(const std::string& op) {
 		return std::make_unique<DivideFunctor>();
 	}
 
-	return std::unique_ptr<Operator>();
+	return nullptr;
 }
