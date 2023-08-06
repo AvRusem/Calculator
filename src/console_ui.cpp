@@ -1,5 +1,7 @@
 #include <iostream>
 #include <variant>
+#include <sstream>
+#include <iomanip>
 
 #include "console_ui.hpp"
 #include "calculator.hpp"
@@ -31,6 +33,7 @@ ConsoleUI::ConsoleUI(Calculator& calculator) :
 	kErrorIdentifierNotExist("This identifier is not exist"),
 	kErrorWrongOperator("Wrong operator"),
 	kUnknownError("Unknown error"),
+	kPrecision(2),
 	calculator_(calculator) {}
 
 std::string ConsoleUI::CreateOutput(std::unique_ptr<calculator::Result> result) const {
@@ -38,38 +41,40 @@ std::string ConsoleUI::CreateOutput(std::unique_ptr<calculator::Result> result) 
 		return kWrongInput + '\n';
 	}
 
-	std::string result_string;
+	std::ostringstream result_ss;
+	result_ss << std::fixed << std::setprecision(kPrecision);
+
 	if (result->status == calculator::Status::kOk) {
 		if (std::holds_alternative<double>(result->return_value)) {
-			result_string = std::to_string(std::get<double>(result->return_value)) + '\n';
+			result_ss << std::get<double>(result->return_value) << '\n';
 		}
 		else if (std::holds_alternative<calculator::ReturnPairType>(result->return_value)) {
 			for (const auto& el : std::get<calculator::ReturnPairType>(result->return_value)) {
-				result_string += el.first + ':' + std::to_string(el.second) + '\n';
+				result_ss << el.first << ':' << el.second << '\n';
 			}
 		}
 	}
 	else {
-		result_string += "Error: ";
+		result_ss << "Error: ";
 
 		switch (std::get<calculator::Errors>(result->return_value)) {
 		case calculator::Errors::kIdentifierTaken:
-			result_string += kErrorIdentifierTaken;
+			result_ss << kErrorIdentifierTaken;
 			break;
 		case calculator::Errors::kIdentifierNotExist:
-			result_string += kErrorIdentifierNotExist;
+			result_ss << kErrorIdentifierNotExist;
 			break;
 		case calculator::Errors::kWrongOperator:
-			result_string += kErrorWrongOperator;
+			result_ss << kErrorWrongOperator;
 			break;
 		default:
-			result_string += kUnknownError;
+			result_ss << kUnknownError;
 		}
 
-		result_string += '\n';
+		result_ss << '\n';
 	}
 
-	return result_string;
+	return result_ss.str();
 }
 
 std::string ConsoleUI::HandleRequest(const std::string& request) const {

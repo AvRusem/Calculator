@@ -60,7 +60,7 @@ bool Calculator::IsExist(const std::string& identifier) const noexcept {
 	return IsVariableExist(identifier) || IsFunctionExist(identifier);
 }
 
-std::unique_ptr<Result> Calculator::DeclareVariable(const std::string& identifier) { // match[1]
+std::unique_ptr<Result> Calculator::DeclareVariable(const std::string& identifier) {
 	if (IsExist(identifier)) {
 		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}
@@ -69,7 +69,7 @@ std::unique_ptr<Result> Calculator::DeclareVariable(const std::string& identifie
 	return std::make_unique<Result>();
 }
 
-std::unique_ptr<Result> Calculator::SetVariable(const std::string& identifier1, const std::string& identifier2) { // match[1 and 2]
+std::unique_ptr<Result> Calculator::SetVariable(const std::string& identifier1, const std::string& identifier2) {
 	if (IsFunctionExist(identifier1)) {
 		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}
@@ -77,7 +77,7 @@ std::unique_ptr<Result> Calculator::SetVariable(const std::string& identifier1, 
 	double value;
 	if (!IsStringDouble(identifier2)) {
 		if (!IsExist(identifier2)) {
-			return std::make_unique<Result>(Errors::kIdentifierTaken);
+			return std::make_unique<Result>(Errors::kIdentifierNotExist);
 		}
 		value = GetValue(identifier2);
 	}
@@ -93,7 +93,7 @@ std::unique_ptr<Result> Calculator::SetVariable(const std::string& identifier1, 
 }
 
 std::unique_ptr<calculator::Result> Calculator::DeclareFunction(const std::string& identifier, const std::string& identifier1,
-	std::unique_ptr<Operator> bin_operator, const std::string& identifier2) { // 1 2 3 4
+	std::unique_ptr<Operator> bin_operator, const std::string& identifier2) {
 	if (IsExist(identifier)) {
 		return std::make_unique<Result>(Errors::kIdentifierTaken);
 	}

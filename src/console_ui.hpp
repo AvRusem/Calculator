@@ -25,6 +25,8 @@ private:
 	const std::string kErrorWrongOperator;
 	const std::string kUnknownError;
 
+	const std::streamsize kPrecision;
+
 	Calculator& calculator_;
 
 	std::string CreateOutput(std::unique_ptr<calculator::Result> result) const;
